@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCV 機械学習 Webアプリ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 OpenCV 機械学習 Webアプリ</h1>
+            <p>最先端のコンピュータビジョン技術を体験できるWebアプリケーション</p>
+            <div class="header-description">
+                <p>このアプリケーションでは、OpenCVライブラリを使用した本格的な画像処理機能を、ブラウザから簡単に利用できます。プログラミング知識不要で、AIによる画像認識の世界を体験してみましょう。</p>
+            </div>
+        </header>
+
+        <main>
+            <!-- ファイルアップロードセクション -->
+            <section class="upload-section">
+                <h2>📁 画像アップロード</h2>
+                <div class="section-description">
+                    <p>まずは分析したい画像をアップロードしてください。JPG、PNG、GIF、BMP形式に対応しており、最大16MBまでのファイルを処理できます。人物写真、風景写真、イラスト、図形など、どんな画像でもお試しいただけます。</p>
+                </div>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <i class="upload-icon">📷</i>
+                        <p><strong>画像をここにドラッグ&ドロップ</strong><br>または<br><strong>クリックしてファイルを選択</strong></p>
+                        <p class="upload-hint">対応形式: JPG, PNG, GIF, BMP（最大16MB）</p>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="file-info" id="fileInfo" style="display: none;"></div>
+            </section>
+
+            <!-- 処理選択セクション -->
+            <section class="processing-section">
+                <h2>🛠️ AI画像処理技術を選択</h2>
+                <div class="section-description">
+                    <p>画像がアップロードされたら、下の3つの処理から選択してください。それぞれ異なるAIアルゴリズムを使用して、画像から様々な特徴を抽出・分析します。処理時間は数秒程度で完了し、結果は即座に表示されます。</p>
+                </div>
+                <div class="processing-options">
+                    <button class="process-btn" data-type="face">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">顔検出</span>
+                        <span class="btn-desc">Haar Cascade分類器を使用して顔と目を自動検出</span>
+                        <span class="btn-detail">人物写真に最適。複数の顔も同時に検出可能です</span>
+                    </button>
+                    <button class="process-btn" data-type="object">
+                        <span class="btn-icon">🔍</span>
+                        <span class="btn-text">物体検出</span>
+                        <span class="btn-desc">輪郭解析により物体の形状を識別・分類</span>
+                        <span class="btn-detail">図形や物体の形を自動で判別し、種類を表示します</span>
+                    </button>
+                    <button class="process-btn" data-type="edge">
+                        <span class="btn-icon">📐</span>
+                        <span class="btn-text">エッジ検出</span>
+                        <span class="btn-desc">Cannyアルゴリズムで画像の境界線を抽出</span>
+                        <span class="btn-detail">建築物や風景写真の輪郭を明確化します</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 結果表示セクション -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>📊 AI分析結果</h2>
+                <div class="section-description">
+                    <p>処理が完了しました！左側が元の画像、右側がAIによる分析結果です。検出された部分には色付きの矩形が表示され、詳細な分析情報も確認できます。別の処理を試したい場合は、上の処理ボタンから選択してください。</p>
+                </div>
+                <div class="results-container">
+                    <div class="result-item">
+                        <h3>📷 アップロードされた画像</h3>
+                        <div class="image-info">
+                            <p>こちらが分析対象となった元の画像です</p>
+                        </div>
+                        <img id="originalImage" src="" alt="元画像">
+                    </div>
+                    <div class="result-item">
+                        <h3>🤖 AI分析結果</h3>
+                        <div class="image-info">
+                            <p>AIが画像を分析し、特徴を可視化した結果です</p>
+                        </div>
+                        <img id="resultImage" src="" alt="処理結果">
+                        <div class="result-info">
+                            <div class="result-details">
+                                <h4>📈 分析詳細</h4>
+                                <p id="resultMessage"></p>
+                                <p id="resultTimestamp"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="next-steps">
+                    <h4>🔄 次のステップ</h4>
+                    <p>異なる処理アルゴリズムを試すことで、画像のさまざまな特徴を発見できます。上の処理ボタンから別の分析手法を選択してみましょう。</p>
+                </div>
+            </section>
+
+            <!-- デモセクション -->
+            <section class="demo-section">
+                <h2>🎯 サンプル画像でデモ体験</h2>
+                <div class="section-description">
+                    <p>手持ちの画像がない場合でも大丈夫！下のボタンをクリックすると、AIが自動的にサンプル画像を生成し、すぐに各機能をお試しいただけます。それぞれの技術がどのように動作するかを、実際の処理結果で確認できます。</p>
+                </div>
+                <div class="demo-explanations">
+                    <div class="demo-explanation">
+                        <h4>👤 顔検出デモについて</h4>
+                        <p>人工的に作成された顔のような画像を使用して、顔検出アルゴリズムの動作を確認できます。実際の写真ではありませんが、Haar Cascade分類器がどのように顔の特徴を認識するかを理解できます。</p>
+                    </div>
+                    <div class="demo-explanation">
+                        <h4>🔷 図形検出デモについて</h4>
+                        <p>様々な幾何学図形（円、四角形、三角形など）を含む画像を自動生成し、物体検出アルゴリズムがどのように形状を識別・分類するかを実演します。</p>
+                    </div>
+                </div>
+                <div class="demo-buttons">
+                    <button class="demo-btn" data-demo="face">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">顔検出デモを実行</span>
+                        <span class="btn-subdesc">サンプル顔画像を生成して分析</span>
+                    </button>
+                    <button class="demo-btn" data-demo="shapes">
+                        <span class="btn-icon">🔷</span>
+                        <span class="btn-text">図形検出デモを実行</span>
+                        <span class="btn-subdesc">幾何学図形を生成して分析</span>
+                    </button>
+                </div>
+                <div class="demo-note">
+                    <p><strong>💡 ヒント:</strong> デモ実行後、上の処理ボタンから他の分析手法も試してみることで、同じ画像に対する異なるアプローチの結果を比較できます。</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- ローディング表示 -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>処理中...</p>
+            </div>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 OpenCV 機械学習プロジェクト</p>
+            <div class="footer-links">
+                <a href="/demo">デモページ</a>
+                <a href="/features">技術詳細</a>
+                <a href="https://opencv.org/" target="_blank">OpenCV公式</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

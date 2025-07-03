@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機能詳細 - OpenCV 機械学習 Webアプリ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 技術詳細とアルゴリズム解説</h1>
+            <p>OpenCVとAIによる画像処理技術の詳細をご紹介</p>
+            <div class="header-description">
+                <p>このページでは、Webアプリで使用している各種画像処理アルゴリズムの技術的詳細と、実際の応用例について詳しく解説します。プログラミング初心者の方にもわかりやすく説明していますので、ぜひご覧ください。</p>
+            </div>
+            <a href="/" style="color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 25px; margin-top: 15px; display: inline-block;">← メインページに戻る</a>
+        </header>
+
+        <main>
+            <!-- 顔検出技術 -->
+            <section>
+                <h2>👤 顔検出技術 - Haar Cascade分類器</h2>
+                <div class="tech-overview">
+                    <div class="tech-description">
+                        <h3>🧠 アルゴリズムの概要</h3>
+                        <p>Haar Cascade分類器は、2001年にViola-Jonesによって提案された機械学習ベースの物体検出手法です。人間の顔の特徴的なパターンを学習済みモデルとして保存し、新しい画像中から同様のパターンを高速で検出します。</p>
+                        
+                        <h4>🔍 検出プロセス</h4>
+                        <ol>
+                            <li><strong>画像の前処理:</strong> カラー画像をグレースケールに変換し、計算負荷を軽減</li>
+                            <li><strong>特徴量抽出:</strong> Haar-like特徴と呼ばれる明暗パターンを計算</li>
+                            <li><strong>多段階判定:</strong> 複数の弱分類器を組み合わせた強分類器で段階的に判定</li>
+                            <li><strong>スケール検索:</strong> 異なるサイズの顔を検出するため、画像を複数の解像度で走査</li>
+                            <li><strong>結果統合:</strong> 重複する検出結果をまとめて最終的な顔領域を決定</li>
+                        </ol>
+
+                        <h4>💡 技術的特徴</h4>
+                        <ul>
+                            <li>高速処理: リアルタイム検出が可能</li>
+                            <li>軽量: 計算リソースが少なくても動作</li>
+                            <li>安定性: 照明条件の変化に比較的頑健</li>
+                            <li>拡張性: 顔以外の物体検出にも応用可能</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-applications">
+                        <h3>🌟 実用例・応用分野</h3>
+                        <div class="application-grid">
+                            <div class="application-item">
+                                <h4>📱 デジタルカメラ・スマートフォン</h4>
+                                <p>自動フォーカス機能で顔を検出し、ピントを合わせる技術として広く使用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🔐 セキュリティシステム</h4>
+                                <p>監視カメラシステムで人物の検出や、アクセス制御システムの前段処理として活用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>📊 マーケティング分析</h4>
+                                <p>店舗での顧客行動分析や、広告効果測定において人数カウントに使用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🎮 エンターテイメント</h4>
+                                <p>ARアプリケーションやゲームで、ユーザーの顔を検出してエフェクトを適用する技術です。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 物体検出技術 -->
+            <section>
+                <h2>🔍 物体検出技術 - 輪郭解析</h2>
+                <div class="tech-overview">
+                    <div class="tech-description">
+                        <h3>🧠 アルゴリズムの概要</h3>
+                        <p>輪郭ベースの物体検出は、画像中の物体の境界線を抽出し、その形状的特徴から物体の種類を識別する手法です。数学的な幾何学解析と組み合わせることで、高精度な形状分類が可能になります。</p>
+                        
+                        <h4>🔍 検出プロセス</h4>
+                        <ol>
+                            <li><strong>ノイズ除去:</strong> ガウシアンフィルタで画像のノイズを軽減</li>
+                            <li><strong>二値化処理:</strong> 適応的閾値処理で物体と背景を分離</li>
+                            <li><strong>輪郭抽出:</strong> 物体の境界線を数値的に抽出</li>
+                            <li><strong>形状近似:</strong> Douglas-Peuckerアルゴリズムで輪郭を単純化</li>
+                            <li><strong>特徴分析:</strong> 頂点数、面積、周囲長などから形状を分類</li>
+                            <li><strong>結果表示:</strong> 検出された物体に分類ラベルと矩形を描画</li>
+                        </ol>
+
+                        <h4>📐 形状分類ロジック</h4>
+                        <ul>
+                            <li><strong>三角形:</strong> 近似後の頂点数が3個の場合</li>
+                            <li><strong>四角形:</strong> 近似後の頂点数が4個の場合</li>
+                            <li><strong>円・楕円:</strong> 近似後の頂点数が5個以上の場合</li>
+                            <li><strong>面積フィルタ:</strong> 最小面積以下の小さなノイズを除去</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-applications">
+                        <h3>🌟 実用例・応用分野</h3>
+                        <div class="application-grid">
+                            <div class="application-item">
+                                <h4>🏭 製造業・品質管理</h4>
+                                <p>製品の外観検査で、部品の形状不良や欠陥を自動検出するシステムに活用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🏥 医療画像解析</h4>
+                                <p>X線やMRI画像で、臓器や病変部位の形状を解析し、診断支援に役立てられています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🚗 自動運転技術</h4>
+                                <p>道路標識や車線の認識において、特定の形状パターンを検出する技術として使用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>📦 物流・倉庫管理</h4>
+                                <p>荷物の形状認識による自動仕分けシステムや、在庫管理の効率化に貢献しています。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- エッジ検出技術 -->
+            <section>
+                <h2>📐 エッジ検出技術 - Cannyアルゴリズム</h2>
+                <div class="tech-overview">
+                    <div class="tech-description">
+                        <h3>🧠 アルゴリズムの概要</h3>
+                        <p>Cannyエッジ検出は、1986年にJohn Cannyによって開発された、最も優秀なエッジ検出アルゴリズムの一つです。画像の明度変化を検出し、物体の境界を正確に抽出することができます。</p>
+                        
+                        <h4>🔍 検出プロセス</h4>
+                        <ol>
+                            <li><strong>ガウシアン平滑化:</strong> ノイズを除去し、滑らかな画像を作成</li>
+                            <li><strong>勾配計算:</strong> Sobelオペレータで画像の勾配強度と方向を計算</li>
+                            <li><strong>非最大値抑制:</strong> エッジ方向に垂直な方向で局所最大値のみを保持</li>
+                            <li><strong>双方向閾値処理:</strong> 高閾値と低閾値の2段階で候補エッジを選別</li>
+                            <li><strong>ヒステリシス追跡:</strong> 強いエッジから弱いエッジへの連結を追跡</li>
+                        </ol>
+
+                        <h4>🎯 Cannyの3つの基準</h4>
+                        <ul>
+                            <li><strong>良好な検出:</strong> 真のエッジを漏れなく検出</li>
+                            <li><strong>良好な位置特定:</strong> 検出されたエッジが実際のエッジ位置に近い</li>
+                            <li><strong>単一応答:</strong> 一つのエッジに対して一つの応答のみ</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-applications">
+                        <h3>🌟 実用例・応用分野</h3>
+                        <div class="application-grid">
+                            <div class="application-item">
+                                <h4>🏗️ 建築・土木測量</h4>
+                                <p>航空写真や衛星画像から建物や道路の輪郭を抽出し、地図作成や都市計画に活用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🔬 科学研究</h4>
+                                <p>顕微鏡画像の細胞境界検出や、天体観測での星雲の輪郭抽出など、研究分野で広く使用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🎨 画像編集・デザイン</h4>
+                                <p>写真編集ソフトの自動選択ツールや、イラスト作成での線画抽出機能に応用されています。</p>
+                            </div>
+                            <div class="application-item">
+                                <h4>🤖 ロボット工学</h4>
+                                <p>ロボットの視覚システムで環境認識や物体把持のための輪郭情報取得に使用されています。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 技術比較 -->
+            <section>
+                <h2>⚖️ 各技術の比較と選択指針</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>技術</th>
+                                <th>処理速度</th>
+                                <th>精度</th>
+                                <th>適用場面</th>
+                                <th>計算負荷</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>顔検出</strong></td>
+                                <td>高速</td>
+                                <td>高（人物写真）</td>
+                                <td>人物の検出・認識</td>
+                                <td>軽い</td>
+                            </tr>
+                            <tr>
+                                <td><strong>物体検出</strong></td>
+                                <td>中程度</td>
+                                <td>中（形状依存）</td>
+                                <td>幾何学図形・部品検査</td>
+                                <td>中程度</td>
+                            </tr>
+                            <tr>
+                                <td><strong>エッジ検出</strong></td>
+                                <td>高速</td>
+                                <td>高（輪郭抽出）</td>
+                                <td>境界抽出・前処理</td>
+                                <td>軽い</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 今後の発展 -->
+            <section>
+                <h2>🚀 最新技術動向と今後の発展</h2>
+                <div class="future-tech">
+                    <div class="trend-item">
+                        <h3>🧠 深層学習の活用</h3>
+                        <p>CNN (Convolutional Neural Network) を使用したより高精度な検出技術や、YOLO、R-CNNなどのリアルタイム物体検出技術が注目されています。</p>
+                    </div>
+                    <div class="trend-item">
+                        <h3>🌐 エッジコンピューティング</h3>
+                        <p>IoTデバイスでの画像処理需要増加に伴い、軽量で高効率なアルゴリズムの開発が進んでいます。</p>
+                    </div>
+                    <div class="trend-item">
+                        <h3>🔄 リアルタイム処理</h3>
+                        <p>GPU加速やFPGA実装により、4K動画などの高解像度コンテンツでもリアルタイム処理が可能になってきています。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 OpenCV 機械学習プロジェクト - 技術詳細ページ</p>
+    </footer>
+
+    <style>
+        .tech-overview {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .tech-description h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .tech-description h4 {
+            color: #555;
+            margin: 20px 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        .tech-description ol, .tech-description ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .tech-description li {
+            margin-bottom: 8px;
+        }
+
+        .application-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .application-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .application-item h4 {
+            color: #155724;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .application-item p {
+            color: #155724;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .future-tech {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .trend-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .trend-item h3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .trend-item p {
+            line-height: 1.7;
+            margin: 0;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .application-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .future-tech {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</body>
+</html>

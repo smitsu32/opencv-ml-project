@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デモ - OpenCV 機械学習 Webアプリ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 OpenCV デモ</h1>
+            <p>サンプル画像で各機能をテストできます</p>
+            <a href="/" style="color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 25px; margin-top: 15px; display: inline-block;">← メインページに戻る</a>
+        </header>
+
+        <main>
+            <!-- デモ説明 -->
+            <section>
+                <h2>📋 デモについて</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #007bff;">
+                        <h3>👤 顔検出デモ</h3>
+                        <p>人工的に作成した顔のような画像で顔検出機能をテストします。Haar Cascade分類器を使用して顔と目を検出します。</p>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                        <h3>🔷 図形検出デモ</h3>
+                        <p>四角形、円、三角形などの幾何学図形を含む画像で物体検出機能をテストします。輪郭検出と形状分析を行います。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 機能説明 -->
+            <section>
+                <h2>🔧 利用可能な機能</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div class="feature-card">
+                        <div class="feature-icon">👤</div>
+                        <h3>顔検出</h3>
+                        <ul>
+                            <li>Haar Cascade分類器使用</li>
+                            <li>顔と目の同時検出</li>
+                            <li>検出結果の矩形表示</li>
+                            <li>検出数の表示</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>物体検出</h3>
+                        <ul>
+                            <li>輪郭ベースの検出</li>
+                            <li>形状の自動分類</li>
+                            <li>面積による フィルタリング</li>
+                            <li>色分けされた矩形表示</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📐</div>
+                        <h3>エッジ検出</h3>
+                        <ul>
+                            <li>Cannyエッジ検出</li>
+                            <li>ノイズ除去機能</li>
+                            <li>閾値の自動調整</li>
+                            <li>輪郭の明確化</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- クイックデモ -->
+            <section>
+                <h2>⚡ クイックデモ</h2>
+                <p>ボタンをクリックするだけで、サンプル画像を自動生成して処理結果を確認できます。</p>
+                <div class="demo-buttons">
+                    <button class="demo-btn" onclick="runQuickDemo('face')">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">顔検出を実行</span>
+                    </button>
+                    <button class="demo-btn" onclick="runQuickDemo('shapes')">
+                        <span class="btn-icon">🔷</span>
+                        <span class="btn-text">図形検出を実行</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- デモ結果表示エリア -->
+            <section id="demoResults" style="display: none;">
+                <h2>📊 デモ結果</h2>
+                <div class="results-container">
+                    <div class="result-item">
+                        <h3>生成された画像</h3>
+                        <img id="demoOriginal" src="" alt="生成画像">
+                    </div>
+                    <div class="result-item">
+                        <h3>処理結果</h3>
+                        <img id="demoResult" src="" alt="処理結果">
+                        <div class="result-info">
+                            <p id="demoMessage"></p>
+                            <p id="demoTimestamp"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ローディング表示 -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>デモを実行中...</p>
+            </div>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 OpenCV 機械学習プロジェクト - デモページ</p>
+    </footer>
+
+    <style>
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-card li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        let currentDemoFile = null;
+
+        function runQuickDemo(demoType) {
+            showLoading();
+            
+            // デモ画像を作成
+            fetch(`/create_demo_image/${demoType}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentDemoFile = data.filename;
+                    
+                    // 適切な処理タイプを決定
+                    const processType = demoType === 'face' ? 'face' : 'object';
+                    
+                    // 処理を実行
+                    return fetch(`/process/${processType}/${data.filename}`);
+                } else {
+                    throw new Error(data.error);
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                
+                if (data.success) {
+                    showDemoResults(currentDemoFile, data.result_image, data.message, data.timestamp);
+                } else {
+                    showError(data.error);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showError('デモ実行エラー: ' + error.message);
+            });
+        }
+
+        function showDemoResults(originalFile, resultFile, message, timestamp) {
+            const demoOriginal = document.getElementById('demoOriginal');
+            const demoResult = document.getElementById('demoResult');
+            const demoMessage = document.getElementById('demoMessage');
+            const demoTimestamp = document.getElementById('demoTimestamp');
+            const demoResults = document.getElementById('demoResults');
+            
+            demoOriginal.src = `/uploads/${originalFile}`;
+            demoResult.src = `/results/${resultFile}`;
+            demoMessage.textContent = message;
+            demoTimestamp.textContent = `処理完了: ${timestamp}`;
+            
+            demoResults.style.display = 'block';
+            demoResults.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
